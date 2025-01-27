@@ -1,7 +1,7 @@
 import { useState } from 'react';
-// import { auth, db } from '../../firebase/config';
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
-// import { setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { 
   Button, TextField, Paper, Typography, Container, 
   Box, Alert, Grid 
@@ -33,26 +33,26 @@ function Register({ setShowRegister }) {
       return;
     }
 
-    // try {
-    //   const userCredential = await createUserWithEmailAndPassword(
-    //     auth, 
-    //     formData.email, 
-    //     formData.password
-    //   );
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth, 
+        formData.email, 
+        formData.password
+      );
 
-    //   // Create user profile in Firestore
-    //   await setDoc(doc(db, 'users', userCredential.user.uid), {
-    //     name: formData.name,
-    //     fitnessGoal: formData.fitnessGoal,
-    //     currentWeight: formData.currentWeight,
-    //     targetWeight: formData.targetWeight,
-    //     email: formData.email,
-    //     createdAt: new Date()
-    //   });
+      // Create user profile in Firestore
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        name: formData.name,
+        fitnessGoal: formData.fitnessGoal,
+        currentWeight: formData.currentWeight,
+        targetWeight: formData.targetWeight,
+        email: formData.email,
+        createdAt: new Date()
+      });
 
-    // } catch (error) {
-    //   setError(error.message);
-    // }
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
