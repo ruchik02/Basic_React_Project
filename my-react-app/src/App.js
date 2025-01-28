@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { auth } from './firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthContainer from './components/Auth/AuthContainer';
+import Dashboard from './components/Dashboard/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import ProtectedRoute from './components/ProtectedRoute';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,15 +51,10 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute user={user}>
-                <div>
-                  <h1>Welcome, {user?.email}!</h1>
-                  <button onClick={() => auth.signOut()}>Sign Out</button>
-                  {/* Add your habit tracking components here */}
-                </div>
+                <Dashboard user={user} />
               </ProtectedRoute>
             }
           />
-          {/* Redirect root to dashboard or login based on auth state */}
           <Route
             path="/"
             element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
