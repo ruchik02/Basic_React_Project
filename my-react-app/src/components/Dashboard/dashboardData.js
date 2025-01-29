@@ -26,8 +26,8 @@ export const activityStats = [
   {
     title: 'Calories',
     icon: <CaloriesIcon />,
-    value: 'Under',
-    unit: 'Today',
+    value: '25000',
+    unit: 'burned',
     subtitle: 'Daily burn',
     color: '#FF7B9C' // Pink
   },

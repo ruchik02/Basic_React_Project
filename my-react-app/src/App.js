@@ -7,6 +7,11 @@ import Dashboard from './components/Dashboard/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import SecuritySettings from './components/Security/SecuritySettings';
+import ActivityScreen from './components/Activity/ActivityScreen';
+import MessagesScreen from './components/Messages/MessagesScreen';
+import DocumentsScreen from './components/Documents/DocumentsScreen';
+import HelpScreen from './components/Help/HelpScreen';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -59,6 +64,11 @@ function App() {
             path="/"
             element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
           />
+          <Route path="/security" element={<SecuritySettings />} />
+          <Route path="/activity" element={<ActivityScreen />} />
+          <Route path="/messages" element={<MessagesScreen />} />
+          <Route path="/documents" element={<DocumentsScreen />} />
+          <Route path="/help" element={<HelpScreen />} />
         </Routes>
       </div>
     </Router>

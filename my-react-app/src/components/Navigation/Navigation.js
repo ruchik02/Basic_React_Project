@@ -8,15 +8,42 @@ import {
   Help as HelpIcon,
   Lock as LockIcon
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 function Navigation() {
+  const navigate = useNavigate();
+
   const navItems = [
-    { icon: <LockIcon />, tooltip: 'Security' },
-    { icon: <HomeIcon />, tooltip: 'Home' },
-    { icon: <ClockIcon />, tooltip: 'Activity' },
-    { icon: <EmailIcon />, tooltip: 'Messages' },
-    { icon: <DocumentIcon />, tooltip: 'Documents' },
-    { icon: <HelpIcon />, tooltip: 'Help' }
+    { 
+      icon: <HomeIcon />, 
+      tooltip: 'Home',
+      path: '/'
+    },
+    { 
+      icon: <ClockIcon />, 
+      tooltip: 'Activity',
+      path: '/activity'
+    },
+    { 
+      icon: <EmailIcon />, 
+      tooltip: 'Messages',
+      path: '/messages'
+    },
+    { 
+      icon: <DocumentIcon />, 
+      tooltip: 'Documents',
+      path: '/documents'
+    },
+    { 
+      icon: <LockIcon />, 
+      tooltip: 'Security',
+      path: '/security'
+    },
+    { 
+      icon: <HelpIcon />, 
+      tooltip: 'Help',
+      path: '/help'
+    }
   ];
 
   return (
@@ -38,6 +65,7 @@ function Navigation() {
       {navItems.map((item, index) => (
         <Tooltip key={index} title={item.tooltip} placement="right">
           <IconButton
+            onClick={() => navigate(item.path)}
             sx={{
               color: colors.background.paper,
               '&:hover': {
@@ -53,4 +81,4 @@ function Navigation() {
   );
 }
 
-export default Navigation; 
+export default Navigation;
