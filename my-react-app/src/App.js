@@ -5,13 +5,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AuthContainer from './components/Auth/AuthContainer';
 import Dashboard from './components/Dashboard/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import SecuritySettings from './components/Security/SecuritySettings';
 import ActivityScreen from './components/Activity/ActivityScreen';
 import MessagesScreen from './components/Messages/MessagesScreen';
 import DocumentsScreen from './components/Documents/DocumentsScreen';
 import HelpScreen from './components/Help/HelpScreen';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -52,6 +52,8 @@ function App() {
             path="/login" 
             element={!user ? <AuthContainer /> : <Navigate to="/dashboard" replace />} 
           />
+          
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -61,14 +63,57 @@ function App() {
             }
           />
           <Route
+            path="/security"
+            element={
+              <ProtectedRoute user={user}>
+                <SecuritySettings user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/activity"
+            element={
+              <ProtectedRoute user={user}>
+                <ActivityScreen user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute user={user}>
+                <MessagesScreen user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents"
+            element={
+              <ProtectedRoute user={user}>
+                <DocumentsScreen user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <ProtectedRoute user={user}>
+                <HelpScreen user={user} />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Default Route */}
+          <Route
             path="/"
             element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
           />
-          <Route path="/security" element={<SecuritySettings />} />
-          <Route path="/activity" element={<ActivityScreen />} />
-          <Route path="/messages" element={<MessagesScreen />} />
-          <Route path="/documents" element={<DocumentsScreen />} />
-          <Route path="/help" element={<HelpScreen />} />
+
+          {/* 404 Route */}
+          <Route
+            path="*"
+            element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+          />
         </Routes>
       </div>
     </Router>
