@@ -13,41 +13,57 @@ import {
   Box, Divider, Alert 
 } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 function Login({ setShowRegister }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [resetSent, setResetSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    
-    try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      console.error('Email sign in error:', error.code);
-      switch (error.code) {
-        case 'auth/user-not-found':
-          setError('No account exists with this email');
-          break;
-        case 'auth/invalid-credential':
-          setError('Incorrect password or email');
-          break;
-        case 'auth/too-many-requests':
-          setError('Too many failed attempts. Please try again later');
-          break;
-        default:
-          setError('Failed to sign in. Please try again');
+  // Add validation schema
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .required('Email is required')
+      .email('Invalid email format'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters')
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setLoading(true);
+      setError('');
+      
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+      } catch (error) {
+        console.error('Email sign in error:', error.code);
+        switch (error.code) {
+          case 'auth/user-not-found':
+            setError('No account exists with this email');
+            break;
+          case 'auth/invalid-credential':
+            setError('Incorrect password or email');
+            break;
+          case 'auth/too-many-requests':
+            setError('Too many failed attempts. Please try again later');
+            break;
+          default:
+            setError('Failed to sign in. Please try again');
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
-  };
+  });
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -95,12 +111,12 @@ function Login({ setShowRegister }) {
   };
 
   const handlePasswordReset = async () => {
-    if (!email) {
+    if (!formik.values.email) {
       setError('Please enter your email first');
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, formik.values.email);
       setResetSent(true);
       setError('');
     } catch (error) {
@@ -118,15 +134,19 @@ function Login({ setShowRegister }) {
         
         {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
 
-        <Box component="form" onSubmit={handleEmailLogin} sx={{ mt: 1, width: '100%' }}>
+        <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1, width: '100%' }}>
           <TextField
             margin="normal"
             required
             fullWidth
             label="Email Address"
+            name="email"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
             disabled={loading}
           />
           <TextField
@@ -134,9 +154,13 @@ function Login({ setShowRegister }) {
             required
             fullWidth
             label="Password"
+            name="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
             disabled={loading}
           />
           <Button
